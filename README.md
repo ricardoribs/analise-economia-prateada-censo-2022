@@ -1,84 +1,57 @@
-📊 Pipeline Censo 2022 – Economia Prateada
-🎯 Objetivo do Projeto
 
-Construir um conjunto de dados mestre (“tabela única”) para alimentar um dashboard analítico, cruzando dados demográficos, socioeconômicos e de infraestrutura de moradia para identificar tendências de envelhecimento populacional a nível municipal.
+---
 
-🗂 Estrutura do Projeto
-Projeto_Censo_Economia_Prateada/
-│
-├─ README.md
-├─ 01_Dados_Brutos/       # 📥 Arquivos .xlsx originais do IBGE
-├─ 02_Dados_Tratados/     # 💾 CSV mestre final
-├─ 03_Dashboard/          # 📊 Dashboards / análises finais
-├─ Limpeza_Censo_2022.ipynb  # 🧹 Notebook de ETL e limpeza
+## 📚 Fontes de Dados
+| Item | Fonte (IBGE) | Arquivo |
+|------|--------------|---------|
+| 👵 Idade (Pirâmide) | Censo 2022 | 951401_...Idade_Municipios.xlsx |
+| 🏠 Domicílios (Unipessoal, 60+) | Censo 2022 | 987902_...Domicilios_Municipios.xlsx |
+| 💰 Renda (por Idade/Raça) | Censo 2022 | 1029103_...Renda_Municipios.xlsx |
+| 💍 Estado Civil | Censo 2022 | 1018504_...EstadoCivil_Municipios.xlsx |
+| 🎓 Escolaridade | Censo 2022 | 1006105_A_...Branca.xlsx (e mais 5 arquivos B-F) |
+| 🌆 Situação (Urbano/Rural) | Censo 2022 | 992206_...Situacao_Domicilio.xlsx |
+| 🚰 Saneamento (Esgoto/Água/Lixo) | Censo 2022 | 680507_...Saneamento_Esgoto.xlsx / 680308_...Saneamento_Agua.xlsx / 689209_...Saneamento_Lixo.xlsx |
+| 🏗 Tipo de Construção | Censo 2022 | 992810_...Moradia_Construcao.xlsx |
 
-📚 Fontes de Dados
-Item	Fonte (IBGE)	Arquivo
-👵 Idade (Pirâmide)	Censo 2022	951401_...Idade_Municipios.xlsx
-🏠 Domicílios (Unipessoal, 60+)	Censo 2022	987902_...Domicilios_Municipios.xlsx
-💰 Renda (por Idade/Raça)	Censo 2022	1029103_...Renda_Municipios.xlsx
-💍 Estado Civil	Censo 2022	1018504_...EstadoCivil_Municipios.xlsx
-🎓 Escolaridade	Censo 2022	1006105_A_...Branca.xlsx (e mais 5 arquivos B-F)
-🌆 Situação (Urbano/Rural)	Censo 2022	992206_...Situacao_Domicilio.xlsx
-🚰 Saneamento (Esgoto/Água/Lixo)	Censo 2022	680507_...Saneamento_Esgoto.xlsx / 680308_...Saneamento_Agua.xlsx / 689209_...Saneamento_Lixo.xlsx
-🏗 Tipo de Construção	Censo 2022	992810_...Moradia_Construcao.xlsx
-🛠 Pipeline ETL
-1️⃣ Limpeza e Transformação (Python/Colab)
+---
 
-🔹 Tratamento de cabeçalhos múltiplos (MultiIndex)
+## 🛠 Pipeline ETL
 
-🔹 Preenchimento de dados faltantes com .ffill()
+### 1️⃣ Limpeza e Transformação (Python/Colab)
+- 🔹 Tratamento de cabeçalhos múltiplos (`MultiIndex`)  
+- 🔹 Preenchimento de dados faltantes com `.ffill()`  
+- 🔹 Remoção de linhas lixo (totais de estado)  
+- 🔹 Correção de duplicatas por município com `.groupby().agg()` e `.drop_duplicates()`  
 
-🔹 Remoção de linhas lixo (totais de estado)
+### 2️⃣ Junção Final (Merge)
+- 🔹 Criação de chave única `Chave_Municipio`  
+- 🔹 Agregação de tabelas com múltiplas linhas por município  
+- 🔹 Merge left com sufixos únicos (`suffixes=('', '_Renda')`, etc.)  
 
-🔹 Correção de duplicatas por município com .groupby().agg() e .drop_duplicates()
+### 3️⃣ Resultado
+- 🔹 DataFrame final: `df_dashboard`  
+- 🔹 **5.316 municípios**  
+- 🔹 **189 colunas**  
+- 🔹 Salvo em: `02_Dados_Tratados/04_DADOS_MESTRES_CENSO_2022_v2.csv`  
 
-2️⃣ Junção Final (Merge)
+---
 
-🔹 Criação de chave única Chave_Municipio
+## 🚀 Como Usar
 
-🔹 Agregação de tabelas com múltiplas linhas por município
+1. Clone o repositório via SSH:
 
-🔹 Merge left com sufixos únicos (suffixes=('', '_Renda'), etc.)
-
-3️⃣ Resultado
-
-🔹 DataFrame final: df_dashboard
-
-🔹 5.316 municípios
-
-🔹 189 colunas
-
-🔹 Salvo em: 02_Dados_Tratados/04_DADOS_MESTRES_CENSO_2022_v2.csv
-
-🚀 Como Usar
-
-Clone o repositório via SSH:
-
+```bash
 git clone git@github.com:ETL4Good/censo60plus-analyticss.git
 
-
-Entre na pasta do projeto:
-
+2. Entre na pasta do projeto:
 cd censo60plus-analyticss
 
+3. Abra o notebook Limpeza_Censo_2022.ipynb no Jupyter / Colab para rodar o pipeline de ETL.
 
-Abra o notebook Limpeza_Censo_2022.ipynb no Jupyter / Colab para rodar o pipeline de ETL.
-
-Atualizar o repositório local:
-
+4. Atualizar o repositório local:
 git pull
 
-
-Para enviar alterações para o GitHub:
-
+5. Para enviar alterações para o GitHub:
 git add .
 git commit -m "Mensagem de commit"
 git push
-
-📝 Observação Final
-
-Toda a limpeza e integração foram realizadas manualmente e com scripts robustos, garantindo reprodutibilidade e consistência — requisito essencial para análises em escala municipal.
-
-
-
