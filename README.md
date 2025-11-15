@@ -1,3 +1,19 @@
+# 📊 Pipeline Censo 2022 – Economia Prateada
+
+## 🎯 Objetivo do Projeto
+Construir um **conjunto de dados mestre** (“tabela única”) para alimentar um dashboard analítico, cruzando dados **demográficos, socioeconômicos e de infraestrutura de moradia** para identificar tendências de **envelhecimento populacional** a nível municipal.
+
+---
+
+## 🗂 Estrutura do Projeto
+Projeto_Censo_Economia_Prateada/
+│
+├─ README.md
+├─ 01_Dados_Brutos/ # 📥 Arquivos .xlsx originais do IBGE
+├─ 02_Dados_Tratados/ # 💾 CSV mestre final
+├─ 03_Dashboard/ # 📊 Dashboards / análises finais
+├─ Limpeza_Censo_2022.ipynb # 🧹 Notebook de ETL e limpeza
+
 
 ---
 
@@ -51,7 +67,11 @@ cd censo60plus-analyticss
 4. Atualizar o repositório local:
 git pull
 
-5. Para enviar alterações para o GitHub:
+5. Para enviar alterações para o GitHub: 
 git add .
 git commit -m "Mensagem de commit"
 git push
+
+📝 Observação Final
+Toda a limpeza e integração foram realizadas manualmente e com scripts robustos, garantindo reprodutibilidade e consistência — requisito essencial para análises em escala municipal.
+
