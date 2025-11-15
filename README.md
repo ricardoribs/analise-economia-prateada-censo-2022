@@ -1,87 +1,84 @@
-# 📊 Pipeline de Dados – Censo 2022: Economia Prateada
+📊 Pipeline Censo 2022 – Economia Prateada
+🎯 Objetivo do Projeto
 
-[![Python](https://img.shields.io/badge/python-3.10-blue?logo=python)](https://www.python.org/)
-[![Pandas](https://img.shields.io/badge/pandas-1.6.2-brightgreen?logo=pandas)](https://pandas.pydata.org/)
-[![GitHub](https://img.shields.io/badge/GitHub-Repository-black?logo=github)](https://github.com/seuusuario/censo60plus-analytics)
+Construir um conjunto de dados mestre (“tabela única”) para alimentar um dashboard analítico, cruzando dados demográficos, socioeconômicos e de infraestrutura de moradia para identificar tendências de envelhecimento populacional a nível municipal.
 
-## 🔹 Objetivo
-Construir um **conjunto de dados mestre** (uma tabela única) para alimentar um **dashboard analítico**, cruzando dados **demográficos, socioeconômicos e de infraestrutura de moradia**.  
-O foco é identificar tendências de **envelhecimento populacional** (Economia Prateada) em nível municipal.  
+🗂 Estrutura do Projeto
+Projeto_Censo_Economia_Prateada/
+│
+├─ README.md
+├─ 01_Dados_Brutos/       # 📥 Arquivos .xlsx originais do IBGE
+├─ 02_Dados_Tratados/     # 💾 CSV mestre final
+├─ 03_Dashboard/          # 📊 Dashboards / análises finais
+├─ Limpeza_Censo_2022.ipynb  # 🧹 Notebook de ETL e limpeza
 
----
+📚 Fontes de Dados
+Item	Fonte (IBGE)	Arquivo
+👵 Idade (Pirâmide)	Censo 2022	951401_...Idade_Municipios.xlsx
+🏠 Domicílios (Unipessoal, 60+)	Censo 2022	987902_...Domicilios_Municipios.xlsx
+💰 Renda (por Idade/Raça)	Censo 2022	1029103_...Renda_Municipios.xlsx
+💍 Estado Civil	Censo 2022	1018504_...EstadoCivil_Municipios.xlsx
+🎓 Escolaridade	Censo 2022	1006105_A_...Branca.xlsx (e mais 5 arquivos B-F)
+🌆 Situação (Urbano/Rural)	Censo 2022	992206_...Situacao_Domicilio.xlsx
+🚰 Saneamento (Esgoto/Água/Lixo)	Censo 2022	680507_...Saneamento_Esgoto.xlsx / 680308_...Saneamento_Agua.xlsx / 689209_...Saneamento_Lixo.xlsx
+🏗 Tipo de Construção	Censo 2022	992810_...Moradia_Construcao.xlsx
+🛠 Pipeline ETL
+1️⃣ Limpeza e Transformação (Python/Colab)
 
-## 🔹 Estrutura do Projeto
+🔹 Tratamento de cabeçalhos múltiplos (MultiIndex)
 
-**📁 Pasta Principal:** `Projeto_Censo_Economia_Prateada`  
-**🌐 Repositório Git:** `censo60plus-analytics`  
+🔹 Preenchimento de dados faltantes com .ffill()
 
-**Subpastas:**  
-- `01_Dados_Brutos/` – Armazenamento dos 15 arquivos `.xlsx` baixados do IBGE.  
-- `02_Dados_Tratados/` – Destino do arquivo CSV mestre.  
-- `03_Dashboard/` – Dashboard final (visualização e análise).  
+🔹 Remoção de linhas lixo (totais de estado)
 
----
+🔹 Correção de duplicatas por município com .groupby().agg() e .drop_duplicates()
 
-## 🔹 Coleta de Dados (Extract)
+2️⃣ Junção Final (Merge)
 
-Foram coletadas **10 fontes de dados principais**, totalizando **15 arquivos físicos**.
+🔹 Criação de chave única Chave_Municipio
 
-| Item do Projeto | Fonte (IBGE) | Tabela | Arquivo(s) |
-|-----------------|--------------|--------|------------|
-| 👶 Idade (Pirâmide, IE) | Censo 2022 | 9514 | `01_Idade_Municipios.xlsx` |
-| 🏠 Domicílios (Unipessoal, 60+) | Censo 2022 | 9879 | `02_Domicilios_Municipios.xlsx` |
-| 💰 Renda (por Idade/Raça) | Censo 2022 | 10291 | `03_Renda_Municipios.xlsx` |
-| 💍 Estado Civil | Censo 2022 | 10185 | `04_EstadoCivil_Municipios.xlsx` |
-| 🎓 Escolaridade | Censo 2022 | 10061 | `05_A-Branca.xlsx` até `05_F.xlsx` |
-| 🌆 Situação (Urbano/Rural) | Censo 2022 | 9922 | `06_Situacao_Domicilio.xlsx` |
-| 🚰 Saneamento (Água) | Censo 2022 | 6803 | `08_Saneamento_Agua.xlsx` |
-| 💩 Saneamento (Lixo) | Censo 2022 | 6892 | `09_Saneamento_Lixo.xlsx` |
-| 🚽 Saneamento (Esgoto) | Censo 2022 | 6805 | `07_Saneamento_Esgoto.xlsx` |
-| 🏗 Tipo de Construção | Censo 2022 | 9928 | `10_Moradia_Construcao.xlsx` |
+🔹 Agregação de tabelas com múltiplas linhas por município
 
----
+🔹 Merge left com sufixos únicos (suffixes=('', '_Renda'), etc.)
 
-## 🔹 Limpeza e Transformação (Python / Google Colab)
+3️⃣ Resultado
 
-Notebook principal: [`Limpeza_Censo_2022.ipynb`](02_Dados_Tratados/Limpeza_Censo_2022.ipynb)
+🔹 DataFrame final: df_dashboard
 
-**⚡ Desafios superados:**  
-- 🗂 **Cabeçalhos MultiIndex:** Resolvido com a função `flatten_ibge_cols` e `header=[...]`.  
-- 🔄 **Dados pivotados/misturados:** Usado `.ffill()` para preencher municípios e raças.  
-- 🗑 **Linhas de lixo (Totais de Estado):** Removidas via `.drop(0)` e lógica de `.ffill()`.  
-- ❌ **Duplicação de municípios (Arquivo 2):** Resolvido com `.groupby().agg()` e `.drop_duplicates()`, garantindo 1 linha por município.  
+🔹 5.316 municípios
 
-**📌 DataFrames tratados:** `df_final_idade`, `df_final_domicilios`, `df_final_renda`, etc.  
+🔹 189 colunas
 
----
+🔹 Salvo em: 02_Dados_Tratados/04_DADOS_MESTRES_CENSO_2022_v2.csv
 
-## 🔹 Junção Final (Merge)
+🚀 Como Usar
 
-**🔧 Procedimentos aplicados:**  
-1. 🏷 **Criação da chave:** `Chave_Municipio` padronizada em todas as tabelas (removendo `(UF)`).  
-2. 📊 **Agregação:** Tabelas de Renda, Estado Civil e Escolaridade agregadas para manter apenas dados de "Total".  
-3. ✅ **Correção de duplicatas:** Duplicatas removidas da tabela base (`df_final_idade`) antes do merge.  
-4. 🏷 **Sufixos exclusivos:** Cada merge executado com `suffixes=('', '_Renda')` (ou similar) para evitar colisão de nomes.  
-5. 🔗 **Resultado:** Merge `how='left'` bem-sucedido, gerando um DataFrame final com **5.316 municípios**.  
+Clone o repositório via SSH:
 
----
+git clone git@github.com:ETL4Good/censo60plus-analyticss.git
 
-## 🔹 Resultado Final (Output)
 
-- **📂 DataFrame mestre:** `df_dashboard`  
-- **📊 Número de colunas:** 189  
-- **💾 Exportação:** CSV final salvo em `02_Dados_Tratados/04_DADOS_MESTRES_CENSO_2022_v2.csv`  
+Entre na pasta do projeto:
 
----
+cd censo60plus-analyticss
 
-## 🔹 Observação Final
 
-💡 Toda a **limpeza e integração** foram realizadas **manual e programaticamente com scripts robustos**, garantindo **reprodutibilidade e consistência** — requisito essencial para análises em escala municipal.  
+Abra o notebook Limpeza_Censo_2022.ipynb no Jupyter / Colab para rodar o pipeline de ETL.
 
----
+Atualizar o repositório local:
 
-## 🔹 Como Usar
+git pull
 
-1. Clone o repositório:  
-```bash
-git clone https://github.com/seuusuario/censo60plus-analytics.git
+
+Para enviar alterações para o GitHub:
+
+git add .
+git commit -m "Mensagem de commit"
+git push
+
+📝 Observação Final
+
+Toda a limpeza e integração foram realizadas manualmente e com scripts robustos, garantindo reprodutibilidade e consistência — requisito essencial para análises em escala municipal.
+
+
+
