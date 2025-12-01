@@ -1,77 +1,52 @@
-# 📊 Pipeline Censo 2022 – Economia Prateada
+# 👴💰 Análise da Economia Prateada: Censo 2022
 
-## 🎯 Objetivo do Projeto
-Construir um **conjunto de dados mestre** (“tabela única”) para alimentar um dashboard analítico, cruzando dados **demográficos, socioeconômicos e de infraestrutura de moradia** para identificar tendências de **envelhecimento populacional** a nível municipal.
+![Status](https://img.shields.io/badge/Status-Concluído-green)
+![Python](https://img.shields.io/badge/Python-3.x-blue)
+![Power BI](https://img.shields.io/badge/PowerBI-Desktop-yellow)
 
----
+## 🎯 O Desafio
+O Brasil está envelhecendo rapidamente. O objetivo deste projeto foi utilizar dados reais do **Censo Demográfico 2022 (IBGE)** para identificar oportunidades de negócios e políticas públicas voltadas para a **Economia Prateada** (população 60+).
 
-## 🗂 Estrutura do Projeto
-Projeto_Censo_Economia_Prateada/
-│
-├─ README.md
-├─ 01_Dados_Brutos/ # 📥 Arquivos .xlsx originais do IBGE
-├─ 02_Dados_Tratados/ # 💾 CSV mestre final
-├─ 03_Dashboard/ # 📊 Dashboards / análises finais
-├─ Limpeza_Censo_2022.ipynb # 🧹 Notebook de ETL e limpeza
-
+O desafio consistiu em mapear "Hotspots": municípios com **alto índice de envelhecimento**, **alta renda** e **alta taxa de idosos morando sozinhos**.
 
 ---
 
-## 📚 Fontes de Dados
-| Item | Fonte (IBGE) | Arquivo |
-|------|--------------|---------|
-| 👵 Idade (Pirâmide) | Censo 2022 | 951401_...Idade_Municipios.xlsx |
-| 🏠 Domicílios (Unipessoal, 60+) | Censo 2022 | 987902_...Domicilios_Municipios.xlsx |
-| 💰 Renda (por Idade/Raça) | Censo 2022 | 1029103_...Renda_Municipios.xlsx |
-| 💍 Estado Civil | Censo 2022 | 1018504_...EstadoCivil_Municipios.xlsx |
-| 🎓 Escolaridade | Censo 2022 | 1006105_A_...Branca.xlsx (e mais 5 arquivos B-F) |
-| 🌆 Situação (Urbano/Rural) | Censo 2022 | 992206_...Situacao_Domicilio.xlsx |
-| 🚰 Saneamento (Esgoto/Água/Lixo) | Censo 2022 | 680507_...Saneamento_Esgoto.xlsx / 680308_...Saneamento_Agua.xlsx / 689209_...Saneamento_Lixo.xlsx |
-| 🏗 Tipo de Construção | Censo 2022 | 992810_...Moradia_Construcao.xlsx |
+## 📊 O Resultado (Dashboard)
+
+![Visão Geral do Dashboard](imagens/dashboard_print.png)
+
+### Principais Insights
+1.  **Matriz de Oportunidade:** Cruzamento entre *Renda Média* vs. *Isolamento*. Identificamos cidades onde os idosos possuem alto poder aquisitivo e moram sozinhos (público-alvo para serviços de Home Care e condomínios assistidos).
+2.  **Top 10 Envelhecimento:** Ranking dos municípios onde a transição demográfica está mais avançada.
+3.  **Geografia:** O mapa de calor revelou concentrações claras de oportunidades na região Sul e Sudeste.
 
 ---
 
-## 🛠 Pipeline ETL
+## ⚙️ Engenharia de Dados (ETL)
 
-### 1️⃣ Limpeza e Transformação (Python/Colab)
-- 🔹 Tratamento de cabeçalhos múltiplos (`MultiIndex`)  
-- 🔹 Preenchimento de dados faltantes com `.ffill()`  
-- 🔹 Remoção de linhas lixo (totais de estado)  
-- 🔹 Correção de duplicatas por município com `.groupby().agg()` e `.drop_duplicates()`  
+Os dados do Censo 2022 não estavam prontos para análise. Foi necessário construir um pipeline de dados robusto utilizando **Python (Pandas)**.
 
-### 2️⃣ Junção Final (Merge)
-- 🔹 Criação de chave única `Chave_Municipio`  
-- 🔹 Agregação de tabelas com múltiplas linhas por município  
-- 🔹 Merge left com sufixos únicos (`suffixes=('', '_Renda')`, etc.)  
+### 1. Coleta de Dados (Fontes)
+Os dados foram extraídos do SIDRA/IBGE e de microdados oficiais:
+* **Tabela 9514:** População por Idade.
+* **Tabela 9879:** Domicílios Unipessoais.
+* **Tabela 10291:** Rendimento Nominal Mensal.
 
-### 3️⃣ Resultado
-- 🔹 DataFrame final: `df_dashboard`  
-- 🔹 **5.316 municípios**  
-- 🔹 **189 colunas**  
-- 🔹 Salvo em: `02_Dados_Tratados/04_DADOS_MESTRES_CENSO_2022_v2.csv`  
+### 2. Transformação (Python)
+O processo de limpeza envolveu:
+* Limpeza de cabeçalhos complexos do IBGE.
+* Tratamento de dados não numéricos e valores nulos.
+* Criação de chaves de ligação (`Join Keys`) para unificar bases com nomes de municípios divergentes.
+* **Cálculo de KPIs:** Índice de Envelhecimento e % Domicílios Unipessoais.
+
+### 3. Carga (Output)
+O resultado foi uma "Tabela Mestre" consolidada, pronta para ser consumida pelo Power BI.
 
 ---
 
-## 🚀 Como Usar
+## 🛠️ Tecnologias Utilizadas
 
-1. Clone o repositório via SSH:
-
-```bash
-git clone git@github.com:ETL4Good/censo60plus-analyticss.git
-
-2. Entre na pasta do projeto:
-cd censo60plus-analyticss
-
-3. Abra o notebook Limpeza_Censo_2022.ipynb no Jupyter / Colab para rodar o pipeline de ETL.
-
-4. Atualizar o repositório local:
-git pull
-
-5. Para enviar alterações para o GitHub: 
-git add .
-git commit -m "Mensagem de commit"
-git push
-
-📝 Observação Final
-Toda a limpeza e integração foram realizadas manualmente e com scripts robustos, garantindo reprodutibilidade e consistência — requisito essencial para análises em escala municipal.
+* **Linguagem:** Python 3.10 (Pandas, NumPy)
+* **Visualização:** Microsoft Power BI
+* **Ambiente:** Google Colab
 
