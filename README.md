@@ -13,7 +13,7 @@ O desafio consistiu em mapear "Hotspots": municípios com **alto índice de enve
 
 ## 📊 O Resultado (Dashboard)
 
-![Visão Geral do Dashboard](imagens/dashboard_print.png)
+![Visão Geral do Dashboard](https://github.com/ricardoribs/analise-economia-prateada-censo-2022/blob/main/dashboard_print.png.PNG?raw=true)
 
 ### Principais Insights
 1.  **Matriz de Oportunidade:** Cruzamento entre *Renda Média* vs. *Isolamento*. Identificamos cidades onde os idosos possuem alto poder aquisitivo e moram sozinhos (público-alvo para serviços de Home Care e condomínios assistidos).
