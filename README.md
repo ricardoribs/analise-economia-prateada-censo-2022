@@ -35,6 +35,7 @@ O desafio consistiu em mapear "Hotspots": municípios com **alto índice de enve
 ```
 
 🔄 Pipeline de Dados
+```
 O fluxo de Engenharia de Dados foi desenhado para transformar dados brutos e desconexos em inteligência de negócio:
 graph LR
     A[SIDRA / IBGE] -->|Coleta Manual/XLSX| B(Google Colab / Python)
@@ -42,6 +43,7 @@ graph LR
     C -->|Cálculo de KPIs| D[Arquivo CSV Mestre]
     D -->|Importação| E[Power BI Desktop]
     E -->|Visualização| F[Dashboard Interativo]
+```
 
     
 1. Extração (Extract)
